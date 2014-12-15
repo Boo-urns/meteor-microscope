@@ -9,14 +9,19 @@ Template.postEdit.events({
       title: $(e.target).find('[name=title]').val()
     }
 
-    Posts.update(currentPostId, {$set: postProperties}, function(error) {
-      if (error) {
-        // display the error to the user
-        alert(error.reason);
-      } else {
-        Router.go('postPage', {_id: currentPostId});
-      }
+    Meteor.call('postEdit', currentPostId, postProperties, function(error, result) {
+      // display the error to the user and abort
+      if (error)
+        return alert(error.reason);
+      
+      // show this result but route anyway
+      if (result)
+        Session.set('updated', result);
+
+      console.log(result);
+      //Router.go('postPage', {_id: result._id});  
     });
+
   },
 
   'click .delete': function(e) {
@@ -26,6 +31,17 @@ Template.postEdit.events({
       var currentPostId = this._id;
       Posts.remove(currentPostId);
       Router.go('postsList');
+    }
+  }
+});
+
+Template.postEdit.helpers({
+  updated: function() {
+    var postStatus =  Session.get('updated');
+    if(postStatus) {
+      return postStatus.updated;
+    } else {
+      return false;
     }
   }
 });

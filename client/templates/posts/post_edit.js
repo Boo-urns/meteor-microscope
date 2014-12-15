@@ -1,3 +1,15 @@
+Template.postEdit.created = function() {
+  Session.set('postEditErrors', {});
+}
+Template.postEdit.helpers({
+  errorMessage: function(field) {
+    return Session.get('postEditErrors')[field];
+  },
+  errorClass: function (field) {
+    return !!Session.get('postEditErrors')[field] ? 'has-error' : '';
+  }
+});
+
 Template.postEdit.events({
   'submit form': function(e) {
     e.preventDefault();
@@ -9,17 +21,22 @@ Template.postEdit.events({
       title: $(e.target).find('[name=title]').val()
     }
 
+    var errors = validatePost(postProperties);
+    if (errors.title || errors.url)
+      return Session.set('postEditErrors', errors);
+
     Meteor.call('postEdit', currentPostId, postProperties, function(error, result) {
       // display the error to the user and abort
       if (error)
         return throwError(error.reason);
       
       // show this result but route anyway
-      if (result)
+      if (result) {
         Session.set('updated', result);
+        Session.set('postSubmitErrors', {});
+      }
 
-      console.log(result);
-      //Router.go('postPage', {_id: result._id});  
+      Router.go('postPage', {_id: result._id});  
     });
 
   },
@@ -39,6 +56,7 @@ Template.postEdit.helpers({
   updated: function() {
     var postStatus =  Session.get('updated');
     if(postStatus) {
+      Session.set('postSubmitErrors', {});
       return postStatus.updated;
     } else {
       return false;

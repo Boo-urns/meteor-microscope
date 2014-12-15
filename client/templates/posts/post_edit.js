@@ -12,7 +12,7 @@ Template.postEdit.events({
     Meteor.call('postEdit', currentPostId, postProperties, function(error, result) {
       // display the error to the user and abort
       if (error)
-        return alert(error.reason);
+        return throwError(error.reason);
       
       // show this result but route anyway
       if (result)

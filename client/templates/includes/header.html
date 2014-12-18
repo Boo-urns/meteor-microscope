@@ -14,9 +14,12 @@
       <ul class="nav navbar-nav">
           {{#if currentUser}}<li><a href="{{pathFor 'postSubmit'}}">Submit Post</a></li>{{/if}}
         </ul>
+        <img src="{{user.services.google.photo}}">
         <ul class="nav navbar-nav navbar-right">
           {{> loginButtons}}
         </ul>
+
+        {{#if currentUser}}<a href="{{ pathFor 'userProfile' }}">My account</a>{{/if}}
       </div>
     </div>
   </nav>

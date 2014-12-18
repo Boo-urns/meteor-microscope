@@ -7,6 +7,10 @@ Meteor.publish('comments', function(postId) {
   return Comments.find({postId: postId});
 });
 
+Meteor.publish('notifications', function() {
+  return Notifications.find();
+});
+
 Meteor.publish("userData", function () {
   if (this.userId) {
   	console.log(Meteor.users());
@@ -17,6 +21,8 @@ Meteor.publish("userData", function () {
     this.ready();
   }
 });
+
+
 
 Meteor.publish('singleUser', function(userId) {
    return Meteor.users.find(userId);
